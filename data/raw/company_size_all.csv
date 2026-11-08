@@ -1,0 +1,112 @@
+ticker,company,year,revenue_usd_m
+ABBV,Abbvie,2016,25638.0
+ABBV,Abbvie,2017,7739.0
+ABBV,Abbvie,2018,8305.0
+ABBV,Abbvie,2019,8704.0
+ABBV,Abbvie,2020,13858.0
+ABBV,Abbvie,2021,14886.0
+ABBV,Abbvie,2022,15121.0
+ABBV,Abbvie,2023,14301.0
+ABBV,Abbvie,2024,15102.0
+AMGN,Amgen,2007,14771.0
+AMGN,Amgen,2008,15003.0
+AMGN,Amgen,2009,14642.0
+AMGN,Amgen,2010,15053.0
+AMGN,Amgen,2011,15582.0
+AMGN,Amgen,2012,17265.0
+AMGN,Amgen,2013,18676.0
+AMGN,Amgen,2014,20063.0
+AMGN,Amgen,2015,21662.0
+AMGN,Amgen,2016,22991.0
+AMGN,Amgen,2017,22849.0
+AMGN,Amgen,2018,23747.0
+AMGN,Amgen,2019,23362.0
+AMGN,Amgen,2020,25424.0
+BIIB,Biogen,2008,175.5
+BIIB,Biogen,2009,33.89
+BIIB,Biogen,2010,65.52
+BIIB,Biogen,2011,563.34
+BIIB,Biogen,2012,333.99
+BIIB,Biogen,2013,351.16
+BIIB,Biogen,2014,144.56
+BIIB,Biogen,2015,417.94
+BIIB,Biogen,2016,458.71
+BIIB,Biogen,2017,651.63
+BMY,Bristol Myers Squibb,2016,19427.0
+BMY,Bristol Myers Squibb,2017,5449.0
+BMY,Bristol Myers Squibb,2018,5973.0
+BMY,Bristol Myers Squibb,2019,7945.0
+BMY,Bristol Myers Squibb,2020,11068.0
+BMY,Bristol Myers Squibb,2021,46385.0
+BMY,Bristol Myers Squibb,2022,46159.0
+BMY,Bristol Myers Squibb,2023,45006.0
+BMY,Bristol Myers Squibb,2024,48300.0
+GILD,Gilead Sciences,2007,4230.05
+GILD,Gilead Sciences,2008,5335.75
+GILD,Gilead Sciences,2009,2032.38
+GILD,Gilead Sciences,2010,1998.69
+GILD,Gilead Sciences,2011,2200.38
+GILD,Gilead Sciences,2012,2588.28
+GILD,Gilead Sciences,2016,30390.0
+GILD,Gilead Sciences,2017,5949.0
+GILD,Gilead Sciences,2018,5795.0
+GILD,Gilead Sciences,2019,5879.0
+GILD,Gilead Sciences,2020,7421.0
+JNJ,Johnson Johnson,2017,20195.0
+JNJ,Johnson Johnson,2018,20394.0
+JNJ,Johnson Johnson,2019,20747.0
+JNJ,Johnson Johnson,2021,82584.0
+JNJ,Johnson Johnson,2022,19996.0
+JNJ,Johnson Johnson,2023,21395.0
+JNJ,Johnson Johnson,2024,88821.0
+LLY,Eli Lilly,2007,18633.5
+LLY,Eli Lilly,2008,20371.9
+LLY,Eli Lilly,2009,21836.0
+LLY,Eli Lilly,2010,23076.0
+LLY,Eli Lilly,2011,24286.5
+LLY,Eli Lilly,2012,5957.3
+LLY,Eli Lilly,2013,5808.8
+LLY,Eli Lilly,2014,5121.3
+LLY,Eli Lilly,2015,5375.6
+LLY,Eli Lilly,2016,5760.5
+LLY,Eli Lilly,2017,6160.7
+LLY,Eli Lilly,2018,5637.6
+LLY,Eli Lilly,2019,6114.0
+LLY,Eli Lilly,2020,24539.8
+LLY,Eli Lilly,2021,28318.4
+LLY,Eli Lilly,2022,28541.4
+LLY,Eli Lilly,2023,34124.0
+LLY,Eli Lilly,2024,45043.0
+MRK,Merck,2007,24197.7
+MRK,Merck,2008,23850.0
+MRK,Merck,2009,27428.0
+MRK,Merck,2010,45987.0
+MRK,Merck,2016,39807.0
+MRK,Merck,2017,40122.0
+MRK,Merck,2018,42294.0
+MRK,Merck,2019,39121.0
+MRK,Merck,2020,41518.0
+MRK,Merck,2021,48704.0
+MRK,Merck,2022,59283.0
+MRK,Merck,2023,60115.0
+MRK,Merck,2024,64168.0
+PFE,Pfizer,2020,41651.0
+PFE,Pfizer,2021,81288.0
+PFE,Pfizer,2022,101175.0
+PFE,Pfizer,2023,59553.0
+PFE,Pfizer,2024,63627.0
+REGN,Regeneron Pharmaceuticals,2008,238.46
+REGN,Regeneron Pharmaceuticals,2009,379.27
+REGN,Regeneron Pharmaceuticals,2010,133.68
+REGN,Regeneron Pharmaceuticals,2011,122.98
+REGN,Regeneron Pharmaceuticals,2012,414.6
+REGN,Regeneron Pharmaceuticals,2013,610.41
+REGN,Regeneron Pharmaceuticals,2014,802.33
+REGN,Regeneron Pharmaceuticals,2015,1098.08
+REGN,Regeneron Pharmaceuticals,2016,1226.83
+REGN,Regeneron Pharmaceuticals,2017,1582.45
+RHHBY,Roche,2020,0.02
+RHHBY,Roche,2021,1.62
+RHHBY,Roche,2022,2.51
+RHHBY,Roche,2023,5.18
+RHHBY,Roche,2024,10.25

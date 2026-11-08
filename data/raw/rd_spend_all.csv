@@ -1,0 +1,99 @@
+year,rd_spend_usd_m,ticker,company
+2022,0.0,JNJ,Johnson Johnson
+2023,483.0,JNJ,Johnson Johnson
+2024,1841.0,JNJ,Johnson Johnson
+2007,4882.8,MRK,Merck
+2008,4805.0,MRK,Merck
+2009,5845.0,MRK,Merck
+2010,11111.0,MRK,Merck
+2011,8467.0,MRK,Merck
+2012,8168.0,MRK,Merck
+2013,7503.0,MRK,Merck
+2014,7180.0,MRK,Merck
+2015,6704.0,MRK,Merck
+2016,10261.0,MRK,Merck
+2017,10339.0,MRK,Merck
+2018,9752.0,MRK,Merck
+2019,9724.0,MRK,Merck
+2020,13397.0,MRK,Merck
+2021,12245.0,MRK,Merck
+2022,13548.0,MRK,Merck
+2023,30531.0,MRK,Merck
+2024,17938.0,MRK,Merck
+2007,3486.7,LLY,Eli Lilly
+2008,3840.9,LLY,Eli Lilly
+2009,4326.5,LLY,Eli Lilly
+2010,4884.2,LLY,Eli Lilly
+2011,5020.8,LLY,Eli Lilly
+2012,5278.1,LLY,Eli Lilly
+2013,5531.3,LLY,Eli Lilly
+2014,4733.6,LLY,Eli Lilly
+2015,4796.4,LLY,Eli Lilly
+2016,5310.3,LLY,Eli Lilly
+2017,5096.2,LLY,Eli Lilly
+2018,5051.2,LLY,Eli Lilly
+2019,5595.0,LLY,Eli Lilly
+2020,5976.3,LLY,Eli Lilly
+2021,6930.7,LLY,Eli Lilly
+2022,7190.8,LLY,Eli Lilly
+2007,3160.0,BMY,Bristol Myers Squibb
+2008,3512.0,BMY,Bristol Myers Squibb
+2009,3647.0,BMY,Bristol Myers Squibb
+2010,3566.0,BMY,Bristol Myers Squibb
+2011,3839.0,BMY,Bristol Myers Squibb
+2012,3904.0,BMY,Bristol Myers Squibb
+2013,3731.0,BMY,Bristol Myers Squibb
+2014,4534.0,BMY,Bristol Myers Squibb
+2015,5920.0,BMY,Bristol Myers Squibb
+2016,5012.0,BMY,Bristol Myers Squibb
+2017,6468.0,BMY,Bristol Myers Squibb
+2018,6332.0,BMY,Bristol Myers Squibb
+2019,6148.0,BMY,Bristol Myers Squibb
+2020,10048.0,BMY,Bristol Myers Squibb
+2021,10195.0,BMY,Bristol Myers Squibb
+2022,9509.0,BMY,Bristol Myers Squibb
+2023,9299.0,BMY,Bristol Myers Squibb
+2024,11159.0,BMY,Bristol Myers Squibb
+2011,1229.15,GILD,Gilead Sciences
+2012,1760.0,GILD,Gilead Sciences
+2013,2120.0,GILD,Gilead Sciences
+2014,2854.0,GILD,Gilead Sciences
+2015,3014.0,GILD,Gilead Sciences
+2016,5098.0,GILD,Gilead Sciences
+2017,3734.0,GILD,Gilead Sciences
+2018,5018.0,GILD,Gilead Sciences
+2019,9106.0,GILD,Gilead Sciences
+2008,516.91,BIIB,Biogen
+2009,135.23,BIIB,Biogen
+2010,168.89,BIIB,Biogen
+2011,186.44,BIIB,Biogen
+2012,213.11,BIIB,Biogen
+2013,238.46,BIIB,Biogen
+2014,201.46,BIIB,Biogen
+2015,310.18,BIIB,Biogen
+2016,248.45,BIIB,Biogen
+2017,306.66,BIIB,Biogen
+2018,437.88,BIIB,Biogen
+2019,480.01,BIIB,Biogen
+2020,466.58,BIIB,Biogen
+2021,3051.1,BIIB,Biogen
+2008,274.9,REGN,Regeneron Pharmaceuticals
+2009,398.76,REGN,Regeneron Pharmaceuticals
+2010,489.25,REGN,Regeneron Pharmaceuticals
+2011,529.51,REGN,Regeneron Pharmaceuticals
+2012,625.55,REGN,Regeneron Pharmaceuticals
+2013,859.95,REGN,Regeneron Pharmaceuticals
+2014,1271.35,REGN,Regeneron Pharmaceuticals
+2015,1620.58,REGN,Regeneron Pharmaceuticals
+2016,2052.3,REGN,Regeneron Pharmaceuticals
+2017,2075.1,REGN,Regeneron Pharmaceuticals
+2018,1468.8,REGN,Regeneron Pharmaceuticals
+2019,2450.0,REGN,Regeneron Pharmaceuticals
+2020,2647.0,REGN,Regeneron Pharmaceuticals
+2021,2860.1,REGN,Regeneron Pharmaceuticals
+2022,3592.5,REGN,Regeneron Pharmaceuticals
+2023,4439.0,REGN,Regeneron Pharmaceuticals
+2024,5132.0,REGN,Regeneron Pharmaceuticals
+2011,1.84,RHHBY,Roche
+2012,0.32,RHHBY,Roche
+2013,0.64,RHHBY,Roche

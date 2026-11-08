@@ -1,0 +1,376 @@
+ticker,company,year,phase1_trials,phase2_trials,phase3_trials,total_active_trials
+ABBV,AbbVie,2000,0,0,1,1
+ABBV,AbbVie,2001,0,0,1,1
+ABBV,AbbVie,2002,0,0,1,1
+ABBV,AbbVie,2003,0,0,1,1
+ABBV,AbbVie,2004,0,1,1,2
+ABBV,AbbVie,2005,0,3,0,3
+ABBV,AbbVie,2006,2,6,0,8
+ABBV,AbbVie,2007,8,15,2,25
+ABBV,AbbVie,2008,11,26,13,50
+ABBV,AbbVie,2009,20,25,20,65
+ABBV,AbbVie,2010,28,31,24,83
+ABBV,AbbVie,2011,27,38,31,96
+ABBV,AbbVie,2012,35,46,36,117
+ABBV,AbbVie,2013,42,47,42,131
+ABBV,AbbVie,2014,43,55,60,158
+ABBV,AbbVie,2015,50,64,77,191
+ABBV,AbbVie,2016,51,65,87,203
+ABBV,AbbVie,2017,65,60,85,210
+ABBV,AbbVie,2018,68,61,87,216
+ABBV,AbbVie,2019,75,73,85,233
+ABBV,AbbVie,2020,84,84,89,257
+ABBV,AbbVie,2021,92,91,91,274
+ABBV,AbbVie,2022,96,90,82,268
+ABBV,AbbVie,2023,101,95,89,285
+ABBV,AbbVie,2024,104,106,100,310
+AMGN,Amgen,2000,4,11,6,21
+AMGN,Amgen,2001,7,17,7,31
+AMGN,Amgen,2002,13,28,16,57
+AMGN,Amgen,2003,16,37,22,75
+AMGN,Amgen,2004,22,47,36,105
+AMGN,Amgen,2005,26,59,47,132
+AMGN,Amgen,2006,31,73,59,163
+AMGN,Amgen,2007,42,101,59,202
+AMGN,Amgen,2008,46,96,43,185
+AMGN,Amgen,2009,50,93,47,190
+AMGN,Amgen,2010,60,106,51,217
+AMGN,Amgen,2011,63,115,55,233
+AMGN,Amgen,2012,71,103,60,234
+AMGN,Amgen,2013,72,96,68,236
+AMGN,Amgen,2014,76,99,71,246
+AMGN,Amgen,2015,67,98,63,228
+AMGN,Amgen,2016,62,87,58,207
+AMGN,Amgen,2017,53,82,53,188
+AMGN,Amgen,2018,63,91,50,204
+AMGN,Amgen,2019,71,104,56,231
+AMGN,Amgen,2020,67,109,52,228
+AMGN,Amgen,2021,67,102,45,214
+AMGN,Amgen,2022,68,99,46,213
+AMGN,Amgen,2023,54,86,49,189
+AMGN,Amgen,2024,47,66,57,170
+AZN,AstraZeneca,2000,1,3,22,26
+AZN,AstraZeneca,2001,1,6,37,44
+AZN,AstraZeneca,2002,2,17,57,76
+AZN,AstraZeneca,2003,4,36,88,128
+AZN,AstraZeneca,2004,12,59,105,176
+AZN,AstraZeneca,2005,19,72,122,213
+AZN,AstraZeneca,2006,27,101,125,253
+AZN,AstraZeneca,2007,57,109,132,298
+AZN,AstraZeneca,2008,155,125,136,416
+AZN,AstraZeneca,2009,142,127,117,386
+AZN,AstraZeneca,2010,168,116,100,384
+AZN,AstraZeneca,2011,127,99,98,324
+AZN,AstraZeneca,2012,91,97,84,272
+AZN,AstraZeneca,2013,92,77,78,247
+AZN,AstraZeneca,2014,114,90,96,300
+AZN,AstraZeneca,2015,115,111,106,332
+AZN,AstraZeneca,2016,134,136,110,380
+AZN,AstraZeneca,2017,148,173,109,430
+AZN,AstraZeneca,2018,162,226,112,500
+AZN,AstraZeneca,2019,176,247,113,536
+AZN,AstraZeneca,2020,176,281,130,587
+AZN,AstraZeneca,2021,177,309,138,624
+AZN,AstraZeneca,2022,169,306,146,621
+AZN,AstraZeneca,2023,158,289,157,604
+AZN,AstraZeneca,2024,156,271,166,593
+BIIB,Biogen,2000,0,1,0,1
+BIIB,Biogen,2001,1,1,3,5
+BIIB,Biogen,2002,5,9,5,19
+BIIB,Biogen,2003,6,16,11,33
+BIIB,Biogen,2004,8,24,13,45
+BIIB,Biogen,2005,10,23,10,43
+BIIB,Biogen,2006,15,26,8,49
+BIIB,Biogen,2007,21,34,12,67
+BIIB,Biogen,2008,28,35,13,76
+BIIB,Biogen,2009,28,28,16,72
+BIIB,Biogen,2010,28,27,20,75
+BIIB,Biogen,2011,30,17,17,64
+BIIB,Biogen,2012,25,22,15,62
+BIIB,Biogen,2013,18,18,13,49
+BIIB,Biogen,2014,23,25,15,63
+BIIB,Biogen,2015,18,26,20,64
+BIIB,Biogen,2016,22,26,19,67
+BIIB,Biogen,2017,17,28,21,66
+BIIB,Biogen,2018,13,28,22,63
+BIIB,Biogen,2019,19,25,26,70
+BIIB,Biogen,2020,19,15,26,60
+BIIB,Biogen,2021,18,15,26,59
+BIIB,Biogen,2022,15,15,28,58
+BIIB,Biogen,2023,11,14,29,54
+BIIB,Biogen,2024,14,14,24,52
+BMY,Bristol-Myers Squibb,2000,3,11,4,18
+BMY,Bristol-Myers Squibb,2001,6,19,12,37
+BMY,Bristol-Myers Squibb,2002,8,28,24,60
+BMY,Bristol-Myers Squibb,2003,11,35,35,81
+BMY,Bristol-Myers Squibb,2004,20,54,48,122
+BMY,Bristol-Myers Squibb,2005,30,87,64,181
+BMY,Bristol-Myers Squibb,2006,53,114,61,228
+BMY,Bristol-Myers Squibb,2007,73,138,66,277
+BMY,Bristol-Myers Squibb,2008,93,150,79,322
+BMY,Bristol-Myers Squibb,2009,133,157,77,367
+BMY,Bristol-Myers Squibb,2010,120,139,57,316
+BMY,Bristol-Myers Squibb,2011,96,137,59,292
+BMY,Bristol-Myers Squibb,2012,97,130,62,289
+BMY,Bristol-Myers Squibb,2013,90,116,71,277
+BMY,Bristol-Myers Squibb,2014,103,121,63,287
+BMY,Bristol-Myers Squibb,2015,96,129,61,286
+BMY,Bristol-Myers Squibb,2016,125,167,57,349
+BMY,Bristol-Myers Squibb,2017,164,234,70,468
+BMY,Bristol-Myers Squibb,2018,179,301,77,557
+BMY,Bristol-Myers Squibb,2019,206,353,79,638
+BMY,Bristol-Myers Squibb,2020,211,371,70,652
+BMY,Bristol-Myers Squibb,2021,217,358,69,644
+BMY,Bristol-Myers Squibb,2022,198,337,66,601
+BMY,Bristol-Myers Squibb,2023,192,282,74,548
+BMY,Bristol-Myers Squibb,2024,150,238,64,452
+GILD,Gilead Sciences,2000,1,1,1,3
+GILD,Gilead Sciences,2001,1,1,1,3
+GILD,Gilead Sciences,2002,3,4,1,8
+GILD,Gilead Sciences,2003,4,8,5,17
+GILD,Gilead Sciences,2004,5,11,12,28
+GILD,Gilead Sciences,2005,6,12,17,35
+GILD,Gilead Sciences,2006,7,19,20,46
+GILD,Gilead Sciences,2007,14,27,18,59
+GILD,Gilead Sciences,2008,14,31,23,68
+GILD,Gilead Sciences,2009,19,39,23,81
+GILD,Gilead Sciences,2010,23,45,29,97
+GILD,Gilead Sciences,2011,25,57,36,118
+GILD,Gilead Sciences,2012,32,61,46,139
+GILD,Gilead Sciences,2013,44,77,63,184
+GILD,Gilead Sciences,2014,34,79,53,166
+GILD,Gilead Sciences,2015,50,91,68,209
+GILD,Gilead Sciences,2016,45,101,70,216
+GILD,Gilead Sciences,2017,41,85,62,188
+GILD,Gilead Sciences,2018,40,71,47,158
+GILD,Gilead Sciences,2019,42,67,38,147
+GILD,Gilead Sciences,2020,42,61,42,145
+GILD,Gilead Sciences,2021,48,65,41,154
+GILD,Gilead Sciences,2022,43,69,46,158
+GILD,Gilead Sciences,2023,39,79,47,165
+GILD,Gilead Sciences,2024,45,87,41,173
+GSK,GlaxoSmithKline,2000,2,18,13,33
+GSK,GlaxoSmithKline,2001,10,31,20,61
+GSK,GlaxoSmithKline,2002,12,46,36,94
+GSK,GlaxoSmithKline,2003,22,76,69,167
+GSK,GlaxoSmithKline,2004,43,99,96,238
+GSK,GlaxoSmithKline,2005,66,141,143,350
+GSK,GlaxoSmithKline,2006,107,192,183,482
+GSK,GlaxoSmithKline,2007,193,226,195,614
+GSK,GlaxoSmithKline,2008,221,222,184,627
+GSK,GlaxoSmithKline,2009,204,242,186,632
+GSK,GlaxoSmithKline,2010,209,258,181,648
+GSK,GlaxoSmithKline,2011,231,249,183,663
+GSK,GlaxoSmithKline,2012,187,204,185,576
+GSK,GlaxoSmithKline,2013,179,194,160,533
+GSK,GlaxoSmithKline,2014,184,181,137,502
+GSK,GlaxoSmithKline,2015,147,152,127,426
+GSK,GlaxoSmithKline,2016,123,137,94,354
+GSK,GlaxoSmithKline,2017,109,122,77,308
+GSK,GlaxoSmithKline,2018,99,107,57,263
+GSK,GlaxoSmithKline,2019,82,107,48,237
+GSK,GlaxoSmithKline,2020,77,88,53,218
+GSK,GlaxoSmithKline,2021,77,104,65,246
+GSK,GlaxoSmithKline,2022,93,117,72,282
+GSK,GlaxoSmithKline,2023,97,124,66,287
+GSK,GlaxoSmithKline,2024,95,136,63,294
+JNJ,Johnson & Johnson,2000,0,0,2,2
+JNJ,Johnson & Johnson,2001,0,0,0,0
+JNJ,Johnson & Johnson,2002,2,3,0,5
+JNJ,Johnson & Johnson,2003,2,5,2,9
+JNJ,Johnson & Johnson,2004,5,11,7,23
+JNJ,Johnson & Johnson,2005,14,16,14,44
+JNJ,Johnson & Johnson,2006,9,22,30,61
+JNJ,Johnson & Johnson,2007,20,37,50,107
+JNJ,Johnson & Johnson,2008,32,47,50,129
+JNJ,Johnson & Johnson,2009,30,32,38,100
+JNJ,Johnson & Johnson,2010,28,34,36,98
+JNJ,Johnson & Johnson,2011,26,23,29,78
+JNJ,Johnson & Johnson,2012,4,9,15,28
+JNJ,Johnson & Johnson,2013,4,7,9,20
+JNJ,Johnson & Johnson,2014,2,5,7,14
+JNJ,Johnson & Johnson,2015,2,3,2,7
+JNJ,Johnson & Johnson,2016,2,4,3,9
+JNJ,Johnson & Johnson,2017,4,7,2,13
+JNJ,Johnson & Johnson,2018,3,6,5,14
+JNJ,Johnson & Johnson,2019,3,7,1,11
+JNJ,Johnson & Johnson,2020,2,7,0,9
+JNJ,Johnson & Johnson,2021,4,7,2,13
+JNJ,Johnson & Johnson,2022,5,7,2,14
+JNJ,Johnson & Johnson,2023,5,10,3,18
+JNJ,Johnson & Johnson,2024,6,11,4,21
+LLY,Eli Lilly and Company,2000,1,9,9,19
+LLY,Eli Lilly and Company,2001,3,12,12,27
+LLY,Eli Lilly and Company,2002,5,19,20,44
+LLY,Eli Lilly and Company,2003,6,31,29,66
+LLY,Eli Lilly and Company,2004,9,55,44,108
+LLY,Eli Lilly and Company,2005,26,91,60,177
+LLY,Eli Lilly and Company,2006,41,140,83,264
+LLY,Eli Lilly and Company,2007,50,191,99,340
+LLY,Eli Lilly and Company,2008,59,205,113,377
+LLY,Eli Lilly and Company,2009,60,182,105,347
+LLY,Eli Lilly and Company,2010,102,171,110,383
+LLY,Eli Lilly and Company,2011,137,150,114,401
+LLY,Eli Lilly and Company,2012,110,126,116,352
+LLY,Eli Lilly and Company,2013,128,104,102,334
+LLY,Eli Lilly and Company,2014,104,83,81,268
+LLY,Eli Lilly and Company,2015,107,72,79,258
+LLY,Eli Lilly and Company,2016,109,67,65,241
+LLY,Eli Lilly and Company,2017,125,74,68,267
+LLY,Eli Lilly and Company,2018,117,68,71,256
+LLY,Eli Lilly and Company,2019,117,76,76,269
+LLY,Eli Lilly and Company,2020,126,101,84,311
+LLY,Eli Lilly and Company,2021,117,114,89,320
+LLY,Eli Lilly and Company,2022,108,114,78,300
+LLY,Eli Lilly and Company,2023,116,112,86,314
+LLY,Eli Lilly and Company,2024,109,112,94,315
+MRK,Merck Sharp & Dohme LLC,2000,4,14,15,33
+MRK,Merck Sharp & Dohme LLC,2001,7,19,31,57
+MRK,Merck Sharp & Dohme LLC,2002,6,29,52,87
+MRK,Merck Sharp & Dohme LLC,2003,16,41,70,127
+MRK,Merck Sharp & Dohme LLC,2004,23,50,67,140
+MRK,Merck Sharp & Dohme LLC,2005,35,82,93,210
+MRK,Merck Sharp & Dohme LLC,2006,46,106,133,285
+MRK,Merck Sharp & Dohme LLC,2007,89,127,156,372
+MRK,Merck Sharp & Dohme LLC,2008,140,142,167,449
+MRK,Merck Sharp & Dohme LLC,2009,161,161,136,458
+MRK,Merck Sharp & Dohme LLC,2010,166,147,112,425
+MRK,Merck Sharp & Dohme LLC,2011,153,134,109,396
+MRK,Merck Sharp & Dohme LLC,2012,125,123,105,353
+MRK,Merck Sharp & Dohme LLC,2013,110,113,113,336
+MRK,Merck Sharp & Dohme LLC,2014,110,103,108,321
+MRK,Merck Sharp & Dohme LLC,2015,121,133,112,366
+MRK,Merck Sharp & Dohme LLC,2016,143,187,101,431
+MRK,Merck Sharp & Dohme LLC,2017,190,278,99,567
+MRK,Merck Sharp & Dohme LLC,2018,209,327,109,645
+MRK,Merck Sharp & Dohme LLC,2019,235,354,123,712
+MRK,Merck Sharp & Dohme LLC,2020,241,372,137,750
+MRK,Merck Sharp & Dohme LLC,2021,237,413,141,791
+MRK,Merck Sharp & Dohme LLC,2022,240,431,141,812
+MRK,Merck Sharp & Dohme LLC,2023,249,430,145,824
+MRK,Merck Sharp & Dohme LLC,2024,257,396,138,791
+NVS,Novartis Pharmaceuticals,2000,1,9,7,17
+NVS,Novartis Pharmaceuticals,2001,1,15,12,28
+NVS,Novartis Pharmaceuticals,2002,3,33,23,59
+NVS,Novartis Pharmaceuticals,2003,10,49,37,96
+NVS,Novartis Pharmaceuticals,2004,17,64,77,158
+NVS,Novartis Pharmaceuticals,2005,34,89,107,230
+NVS,Novartis Pharmaceuticals,2006,61,99,119,279
+NVS,Novartis Pharmaceuticals,2007,77,123,115,315
+NVS,Novartis Pharmaceuticals,2008,100,147,116,363
+NVS,Novartis Pharmaceuticals,2009,111,179,129,419
+NVS,Novartis Pharmaceuticals,2010,126,209,155,490
+NVS,Novartis Pharmaceuticals,2011,138,228,164,530
+NVS,Novartis Pharmaceuticals,2012,156,256,185,597
+NVS,Novartis Pharmaceuticals,2013,164,255,190,609
+NVS,Novartis Pharmaceuticals,2014,167,246,183,596
+NVS,Novartis Pharmaceuticals,2015,158,232,158,548
+NVS,Novartis Pharmaceuticals,2016,160,218,132,510
+NVS,Novartis Pharmaceuticals,2017,149,212,107,468
+NVS,Novartis Pharmaceuticals,2018,130,212,93,435
+NVS,Novartis Pharmaceuticals,2019,114,195,101,410
+NVS,Novartis Pharmaceuticals,2020,103,178,92,373
+NVS,Novartis Pharmaceuticals,2021,101,172,116,389
+NVS,Novartis Pharmaceuticals,2022,103,164,114,381
+NVS,Novartis Pharmaceuticals,2023,82,135,118,335
+NVS,Novartis Pharmaceuticals,2024,85,126,100,311
+PFE,Pfizer,2000,0,9,17,26
+PFE,Pfizer,2001,2,18,30,50
+PFE,Pfizer,2002,5,31,47,83
+PFE,Pfizer,2003,14,51,68,133
+PFE,Pfizer,2004,28,67,86,181
+PFE,Pfizer,2005,43,119,122,284
+PFE,Pfizer,2006,75,174,177,426
+PFE,Pfizer,2007,134,227,227,588
+PFE,Pfizer,2008,230,270,244,744
+PFE,Pfizer,2009,290,289,231,810
+PFE,Pfizer,2010,281,292,224,797
+PFE,Pfizer,2011,267,259,199,725
+PFE,Pfizer,2012,192,241,173,606
+PFE,Pfizer,2013,156,204,163,523
+PFE,Pfizer,2014,167,191,148,506
+PFE,Pfizer,2015,141,179,128,448
+PFE,Pfizer,2016,141,164,126,431
+PFE,Pfizer,2017,138,178,101,417
+PFE,Pfizer,2018,151,182,106,439
+PFE,Pfizer,2019,171,199,98,468
+PFE,Pfizer,2020,165,196,104,465
+PFE,Pfizer,2021,178,201,113,492
+PFE,Pfizer,2022,169,207,115,491
+PFE,Pfizer,2023,164,206,99,469
+PFE,Pfizer,2024,149,173,88,410
+REGN,Regeneron Pharmaceuticals,2000,0,0,0,0
+REGN,Regeneron Pharmaceuticals,2001,1,0,0,1
+REGN,Regeneron Pharmaceuticals,2002,2,0,0,2
+REGN,Regeneron Pharmaceuticals,2003,1,0,0,1
+REGN,Regeneron Pharmaceuticals,2004,3,0,0,3
+REGN,Regeneron Pharmaceuticals,2005,5,0,1,6
+REGN,Regeneron Pharmaceuticals,2006,7,5,2,14
+REGN,Regeneron Pharmaceuticals,2007,8,7,7,22
+REGN,Regeneron Pharmaceuticals,2008,11,9,8,28
+REGN,Regeneron Pharmaceuticals,2009,14,8,14,36
+REGN,Regeneron Pharmaceuticals,2010,16,10,15,41
+REGN,Regeneron Pharmaceuticals,2011,20,13,13,46
+REGN,Regeneron Pharmaceuticals,2012,23,10,27,60
+REGN,Regeneron Pharmaceuticals,2013,24,18,35,77
+REGN,Regeneron Pharmaceuticals,2014,27,17,34,78
+REGN,Regeneron Pharmaceuticals,2015,25,17,33,75
+REGN,Regeneron Pharmaceuticals,2016,23,22,32,77
+REGN,Regeneron Pharmaceuticals,2017,24,19,34,77
+REGN,Regeneron Pharmaceuticals,2018,26,31,40,97
+REGN,Regeneron Pharmaceuticals,2019,32,45,40,117
+REGN,Regeneron Pharmaceuticals,2020,33,60,48,141
+REGN,Regeneron Pharmaceuticals,2021,44,65,46,155
+REGN,Regeneron Pharmaceuticals,2022,47,60,36,143
+REGN,Regeneron Pharmaceuticals,2023,52,64,33,149
+REGN,Regeneron Pharmaceuticals,2024,55,87,44,186
+RHHBY,Hoffmann-La Roche,2000,1,7,10,18
+RHHBY,Hoffmann-La Roche,2001,4,18,11,33
+RHHBY,Hoffmann-La Roche,2002,4,30,19,53
+RHHBY,Hoffmann-La Roche,2003,5,38,33,76
+RHHBY,Hoffmann-La Roche,2004,11,55,54,120
+RHHBY,Hoffmann-La Roche,2005,19,81,75,175
+RHHBY,Hoffmann-La Roche,2006,26,102,98,226
+RHHBY,Hoffmann-La Roche,2007,30,134,121,285
+RHHBY,Hoffmann-La Roche,2008,38,156,146,340
+RHHBY,Hoffmann-La Roche,2009,54,155,150,359
+RHHBY,Hoffmann-La Roche,2010,61,156,146,363
+RHHBY,Hoffmann-La Roche,2011,94,153,133,380
+RHHBY,Hoffmann-La Roche,2012,99,141,133,373
+RHHBY,Hoffmann-La Roche,2013,86,126,130,342
+RHHBY,Hoffmann-La Roche,2014,82,110,127,319
+RHHBY,Hoffmann-La Roche,2015,76,103,128,307
+RHHBY,Hoffmann-La Roche,2016,89,103,106,298
+RHHBY,Hoffmann-La Roche,2017,93,99,103,295
+RHHBY,Hoffmann-La Roche,2018,94,100,115,309
+RHHBY,Hoffmann-La Roche,2019,97,96,112,305
+RHHBY,Hoffmann-La Roche,2020,89,105,119,313
+RHHBY,Hoffmann-La Roche,2021,93,120,126,339
+RHHBY,Hoffmann-La Roche,2022,86,123,128,337
+RHHBY,Hoffmann-La Roche,2023,87,135,130,352
+RHHBY,Hoffmann-La Roche,2024,75,118,113,306
+SNY,Sanofi,2000,7,11,14,32
+SNY,Sanofi,2001,9,17,33,59
+SNY,Sanofi,2002,13,37,54,104
+SNY,Sanofi,2003,21,76,75,172
+SNY,Sanofi,2004,34,140,96,270
+SNY,Sanofi,2005,44,185,135,364
+SNY,Sanofi,2006,71,232,199,502
+SNY,Sanofi,2007,80,244,224,548
+SNY,Sanofi,2008,98,250,239,587
+SNY,Sanofi,2009,117,247,190,554
+SNY,Sanofi,2010,124,223,150,497
+SNY,Sanofi,2011,135,193,139,467
+SNY,Sanofi,2012,129,178,137,444
+SNY,Sanofi,2013,111,153,129,393
+SNY,Sanofi,2014,93,138,107,338
+SNY,Sanofi,2015,89,121,98,308
+SNY,Sanofi,2016,74,106,92,272
+SNY,Sanofi,2017,69,90,96,255
+SNY,Sanofi,2018,68,97,107,272
+SNY,Sanofi,2019,65,92,109,266
+SNY,Sanofi,2020,63,98,108,269
+SNY,Sanofi,2021,70,121,90,281
+SNY,Sanofi,2022,68,127,77,272
+SNY,Sanofi,2023,56,126,70,252
+SNY,Sanofi,2024,59,125,71,255
