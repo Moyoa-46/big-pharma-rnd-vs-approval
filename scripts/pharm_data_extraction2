@@ -1,0 +1,533 @@
+"""
+Pharma Portfolio Project — Data Extraction (v3 + pipeline & company size)
+==========================================================================
+Datasets extracted:
+  1. FDA approvals       → fda_approvals_raw.csv     (bulk download, no API key)
+  2. R&D spend           → rd_spend_all.csv           (Macrotrends scrape)
+  3. Clinical pipeline   → pipeline_size.csv          (ClinicalTrials.gov API)
+  4. Company size        → company_size_all.csv       (Macrotrends scrape)
+
+All files saved to ./data/raw/
+Datasets 1 & 2 are unchanged from v3 — already working.
+Datasets 3 & 4 are new additions.
+
+Rough run times:
+  Dataset 1 — ~3 min   (150 MB download)
+  Dataset 2 — ~1 min   (15 EDGAR API calls, 0.5s delay each)
+  Dataset 3 — ~20 min  (1,125 API calls — run last or separately)
+  Dataset 4 — ~1 min   (15 EDGAR API calls, 0.5s delay each)
+
+Requirements:
+  pip install requests pandas beautifulsoup4 lxml tqdm
+"""
+
+import io, os, json, time, zipfile, requests
+import pandas as pd
+from tqdm import tqdm
+
+RAW_DIR = os.path.join("data", "raw")
+os.makedirs(RAW_DIR, exist_ok=True)
+
+# ─────────────────────────────────────────────────────────────
+# SHARED COMPANY LIST — used by all four datasets
+# ─────────────────────────────────────────────────────────────
+# Format:  TICKER : (macrotrends_slug, clinicaltrials_sponsor_name)
+#
+# macrotrends_slug      — the URL slug on macrotrends.net
+# clinicaltrials_name   — exactly how ClinicalTrials.gov lists the sponsor
+#                         (copy-paste sensitive — a typo = zero results)
+COMPANIES = {
+    "JNJ"  : ("johnson-johnson",           "Johnson & Johnson"),
+    "PFE"  : ("pfizer",                    "Pfizer"),
+    "MRK"  : ("merck",                     "Merck Sharp & Dohme LLC"),
+    "ABBV" : ("abbvie",                    "AbbVie"),
+    "LLY"  : ("eli-lilly",                 "Eli Lilly and Company"),
+    "BMY"  : ("bristol-myers-squibb",      "Bristol-Myers Squibb"),
+    "AMGN" : ("amgen",                     "Amgen"),
+    "GILD" : ("gilead-sciences",           "Gilead Sciences"),
+    "BIIB" : ("biogen",                    "Biogen"),
+    "REGN" : ("regeneron-pharmaceuticals", "Regeneron Pharmaceuticals"),
+    "AZN"  : ("astrazeneca",               "AstraZeneca"),
+    "NVS"  : ("novartis",                  "Novartis Pharmaceuticals"),
+    "RHHBY": ("roche",                     "Hoffmann-La Roche"),
+    "SNY"  : ("sanofi",                    "Sanofi"),
+    "GSK"  : ("glaxosmithkline",           "GlaxoSmithKline"),
+}
+
+# ClinicalTrials.gov API base URL (free, no key needed)
+CT_BASE = "https://clinicaltrials.gov/api/v2/studies"
+
+# SEC EDGAR API — free, no key, no scraping, no blocks
+# Used for R&D spend, revenue, and market cap (Datasets 2 & 4)
+EDGAR_BASE   = "https://data.sec.gov/api/xbrl/companyfacts"
+EDGAR_SEARCH = "https://efts.sec.gov/LATEST/search-index?q={}&dateRange=custom&startdt=2000-01-01&enddt=2024-12-31&forms=10-K"
+EDGAR_HEADERS = {"User-Agent": "pharma-eda-portfolio moyo@example.com"}
+# SEC requires a User-Agent with contact info — use your real email above
+
+# SEC CIK numbers for each company
+# CIK = Central Index Key — the SEC's unique ID for every filer
+# Find any company's CIK at: https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany
+COMPANY_CIKS = {
+    "JNJ"  : "0000200406",
+    "PFE"  : "0000078003",
+    "MRK"  : "0000310158",
+    "ABBV" : "0001551152",
+    "LLY"  : "0000059478",
+    "BMY"  : "0000014272",
+    "AMGN" : "0000318154",
+    "GILD" : "0000882095",
+    "BIIB" : "0000875320",
+    "REGN" : "0000872589",
+    "AZN"  : "0001063315",
+    "NVS"  : "0001114448",
+    "RHHBY": "0001403708",
+    "SNY"  : "0001121404",
+    "GSK"  : "0001131399",
+}
+
+
+# ══════════════════════════════════════════════════════════════
+# DATASET 1 — FDA APPROVALS
+# Source  : FDA bulk download zip (no API key needed)
+# Why zip : the live /drug/drugsfda API returns 500 errors in 2025
+# Key fix : the date field is 'submission_status_date', not 'action_date'
+# ══════════════════════════════════════════════════════════════
+
+FDA_BULK_URL = (
+    "https://download.open.fda.gov/drug/drugsfda/"
+    "drug-drugsfda-0001-of-0001.json.zip"
+)
+
+def fetch_fda_approvals(start_year=2000, end_year=2024):
+    print("\n── DATASET 1: FDA Bulk Download ──")
+    resp = requests.get(FDA_BULK_URL, stream=True, timeout=120)
+    resp.raise_for_status()
+
+    total_bytes = int(resp.headers.get("content-length", 0))
+    buffer = io.BytesIO()
+    with tqdm(total=total_bytes, unit="B", unit_scale=True, desc="  Downloading") as pbar:
+        for chunk in resp.iter_content(chunk_size=256 * 1024):
+            buffer.write(chunk)
+            pbar.update(len(chunk))
+
+    buffer.seek(0)
+    print("  Unzipping...")
+    with zipfile.ZipFile(buffer) as zf:
+        with zf.open(zf.namelist()[0]) as f:
+            records = json.load(f)["results"]
+    print(f"  {len(records):,} total records loaded")
+
+    rows = []
+    for rec in tqdm(records, desc="  Processing", unit="rec"):
+        app_number  = rec.get("application_number", "")
+        sponsor     = rec.get("sponsor_name", "")
+        products    = rec.get("products", [])
+        brand_name  = products[0].get("brand_name",  "") if products else ""
+        dosage_form = products[0].get("dosage_form", "") if products else ""
+        route       = products[0].get("route",       "") if products else ""
+        mkt_status  = products[0].get("marketing_status", "") if products else ""
+        active_ingredients = ""
+        if products:
+            ingredients = products[0].get("active_ingredients", [])
+            active_ingredients = "; ".join(i.get("name", "") for i in ingredients)
+
+        for sub in rec.get("submissions", []):
+            if sub.get("submission_type") != "ORIG":
+                continue
+            if sub.get("submission_status") != "AP":
+                continue
+            date_str = sub.get("submission_status_date", "")
+            try:
+                year = int(date_str[:4])
+            except (ValueError, TypeError):
+                continue
+            if not (start_year <= year <= end_year):
+                continue
+            rows.append({
+                "application_number" : app_number,
+                "app_type"           : app_number[:3] if len(app_number) >= 3 else "",
+                "sponsor_name"       : sponsor,
+                "brand_name"         : brand_name,
+                "active_ingredients" : active_ingredients,
+                "dosage_form"        : dosage_form,
+                "route"              : route,
+                "marketing_status"   : mkt_status,
+                "approval_date"      : date_str,
+                "approval_year"      : year,
+                "review_priority"    : sub.get("review_priority", ""),
+                "submission_class"   : sub.get("submission_class_code", ""),
+            })
+
+    df = pd.DataFrame(rows)
+    df["approval_date"] = pd.to_datetime(df["approval_date"], format="%Y%m%d", errors="coerce")
+    df = df.sort_values("approval_date").reset_index(drop=True)
+    out = os.path.join(RAW_DIR, "fda_approvals_raw.csv")
+    df.to_csv(out, index=False)
+    print(f"[FDA] ✓ {len(df):,} records → {out}")
+    return df
+
+
+# ══════════════════════════════════════════════════════════════
+# DATASETS 2 & 4 — R&D SPEND + COMPANY SIZE
+# Source  : SEC EDGAR (official US financial filings API)
+#
+# WHY EDGAR INSTEAD OF MACROTRENDS?
+#   Macrotrends blocked automated access with a 403 error.
+#   EDGAR is the US government's official database — every public
+#   company must file here. It has a proper free API, no scraping,
+#   no blocks, and the data comes straight from the companies themselves.
+#
+# HOW IT WORKS:
+#   Each company has a CIK (Central Index Key) — their unique SEC ID.
+#   The API endpoint is:
+#     https://data.sec.gov/api/xbrl/companyfacts/{CIK}.json
+#   This returns a giant JSON of every financial fact that company ever
+#   reported, tagged by accounting standard (us-gaap).
+#
+# THE FACTS WE EXTRACT:
+#   R&D spend   → us-gaap tag: ResearchAndDevelopmentExpense
+#   Revenue     → us-gaap tag: Revenues  (or RevenueFromContractWithCustomer)
+#
+#   Values are reported in USD (not millions) — we convert to millions.
+#   Companies file annually (10-K) and quarterly (10-Q); we keep annual only.
+# ══════════════════════════════════════════════════════════════
+
+def _fetch_edgar_fact(cik, tag, start_year=2000, end_year=2024):
+    """
+    Fetch one financial fact (e.g. R&D spend) for one company from EDGAR.
+
+    cik  : the company's SEC CIK number e.g. "0000078003"
+    tag  : the us-gaap accounting tag e.g. "ResearchAndDevelopmentExpense"
+
+    Returns a DataFrame with columns: year, value_usd_m
+    Only keeps annual (10-K) filings, one row per year.
+    """
+    url = f"{EDGAR_BASE}/CIK{cik}.json"
+    try:
+        resp = requests.get(url, headers=EDGAR_HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        return pd.DataFrame(), str(e)
+
+    data = resp.json()
+
+    # Navigate the nested JSON:
+    # data → facts → us-gaap → <tag> → units → USD → [ list of filings ]
+    facts = (data
+             .get("facts", {})
+             .get("us-gaap", {})
+             .get(tag, {})
+             .get("units", {})
+             .get("USD", []))
+
+    if not facts:
+        return pd.DataFrame(), f"tag '{tag}' not found"
+
+    rows = []
+    for entry in facts:
+        # We only want annual 10-K filings, not quarterly 10-Q
+        if entry.get("form") != "10-K":
+            continue
+
+        # 'end' is the period end date e.g. "2022-12-31"
+        end_date = entry.get("end", "")
+        try:
+            year = int(end_date[:4])
+        except (ValueError, TypeError):
+            continue
+
+        if not (start_year <= year <= end_year):
+            continue
+
+        val = entry.get("val", None)
+        if val is None:
+            continue
+
+        rows.append({"year": year, "value_usd_m": round(val / 1_000_000, 2)})
+
+    if not rows:
+        return pd.DataFrame(), "no annual filings in date range"
+
+    df = pd.DataFrame(rows)
+    # Some years appear twice (amended filings) — keep the latest filed value
+    df = (df.sort_values("year")
+            .drop_duplicates(subset="year", keep="last")
+            .reset_index(drop=True))
+    return df, "ok"
+
+
+def fetch_all_rd_spend(delay=0.5):
+    """
+    Pull annual R&D spend for all 15 companies from SEC EDGAR.
+    EDGAR requires a short delay between requests (their rate limit is ~10/sec).
+    0.5s is polite and fast — total run time ~1 minute.
+    """
+    print(f"\n── DATASET 2: R&D Spend (SEC EDGAR) ──")
+    all_dfs = []
+
+    for ticker, (slug, _ct_name) in COMPANIES.items():
+        cik = COMPANY_CIKS.get(ticker)
+        print(f"  {ticker:<6}", end=" ", flush=True)
+
+        df, status = _fetch_edgar_fact(cik, "ResearchAndDevelopmentExpense")
+
+        if df.empty:
+            print(f"→ no data ({status})")
+            continue
+
+        df = df.rename(columns={"value_usd_m": "rd_spend_usd_m"})
+        df["ticker"]  = ticker
+        df["company"] = slug.replace("-", " ").title()
+        print(f"→ {len(df)} years  (latest: ${df['rd_spend_usd_m'].iloc[-1]:,.0f}M)")
+        df.to_csv(os.path.join(RAW_DIR, f"rd_spend_{ticker}.csv"), index=False)
+        all_dfs.append(df)
+        time.sleep(delay)
+
+    if not all_dfs:
+        print("[R&D] No data collected — check CIK numbers or EDGAR_HEADERS email.")
+        return pd.DataFrame()
+
+    combined = pd.concat(all_dfs, ignore_index=True)
+    out = os.path.join(RAW_DIR, "rd_spend_all.csv")
+    combined.to_csv(out, index=False)
+    print(f"[R&D] ✓ {len(combined):,} rows → {out}")
+    return combined
+
+
+# ══════════════════════════════════════════════════════════════
+# DATASET 3 — CLINICAL PIPELINE SIZE (ClinicalTrials.gov API)
+# ══════════════════════════════════════════════════════════════
+#
+# WHAT IS THIS?
+#   ClinicalTrials.gov is a public database run by the US government.
+#   Every drug trial that runs in the US must be registered here.
+#   It tells us: for each company, how many drugs were in active trials
+#   per phase (Phase 1, 2, 3) per year.
+#
+# WHY DO WE WANT IT?
+#   R&D spend tells us HOW MUCH money was spent.
+#   Pipeline size tells us WHAT that money was being spent ON —
+#   how many shots on goal the company had in any given year.
+#   Together they give us: spend-per-trial (efficiency metric).
+#
+# HOW DOES THE API WORK?
+#   ClinicalTrials.gov has a proper free REST API (v2, launched 2023).
+#   No API key needed. Endpoint:
+#     https://clinicaltrials.gov/api/v2/studies
+#   We ask: "give me all studies where this company is the sponsor,
+#            the phase is X, and the study was active in year Y."
+#   It returns paginated JSON — up to 1000 results per page.
+#
+# WHAT WE'RE CAPTURING:
+#   For each company × year → count of Phase 1 / Phase 2 / Phase 3 trials
+#   We loop years 2000–2024 and sum up the counts.
+#
+# NOTE ON ACCURACY:
+#   ClinicalTrials.gov was only mandated for all trials from ~2007.
+#   Data before 2007 will be incomplete — we'll flag this in the notebook.
+# ══════════════════════════════════════════════════════════════
+
+CT_BASE = "https://clinicaltrials.gov/api/v2/studies"
+
+def _fetch_trial_count(sponsor_name, phase, year):
+    """
+    Ask ClinicalTrials.gov: how many trials did this sponsor have
+    in this phase that were active (started or ongoing) in this year?
+
+    Returns an integer count.
+    """
+    # Date range: trials that started on or before Dec 31 of this year
+    # and had a primary completion date on or after Jan 1 of this year
+    # = trials that were active at some point during this year
+    params = {
+        "query.spons"    : sponsor_name,
+        "filter.advanced": f"AREA[Phase]{phase}",
+        "postFilter.advanced": (
+            f"AREA[StartDate]RANGE[MIN,{year}-12-31]"
+            f" AND AREA[PrimaryCompletionDate]RANGE[{year}-01-01,MAX]"
+        ),
+        "countTotal"     : "true",
+        "pageSize"       : 1,          # we only need the total count, not the records
+    }
+    try:
+        resp = requests.get(CT_BASE, params=params, timeout=15)
+        resp.raise_for_status()
+        data = resp.json()
+        return data.get("totalCount", 0)
+    except Exception:
+        return None     # None = request failed (we'll handle this separately)
+
+
+def fetch_pipeline_size(start_year=2000, end_year=2024, delay=1.0):
+    """
+    For each company and each year, fetch the count of active
+    Phase 1, Phase 2, and Phase 3 trials.
+
+    This makes (15 companies × 25 years × 3 phases) = ~1,125 API calls.
+    With a 1-second delay that's ~20 minutes — run it once and save the CSV.
+
+    The delay is important: ClinicalTrials.gov will throttle you
+    if you hit it too fast.
+    """
+    print(f"\n── DATASET 3: Clinical Pipeline (ClinicalTrials.gov API) ──")
+    print(f"  Companies : {len(COMPANIES)}")
+    print(f"  Years     : {start_year}–{end_year}")
+    print(f"  Phases    : 1, 2, 3")
+    print(f"  Est. time : ~20 minutes (1,125 API calls × {delay}s delay)")
+    print(f"  Tip: Run this once — it saves to CSV so you never need to re-run it.\n")
+
+    # Phase labels as ClinicalTrials.gov expects them
+    phases = {
+        "PHASE1": "phase1_trials",
+        "PHASE2": "phase2_trials",
+        "PHASE3": "phase3_trials",
+    }
+
+    rows = []
+    years = list(range(start_year, end_year + 1))
+
+    for ticker, (slug, ct_name) in COMPANIES.items():
+        print(f"  {ticker} ({ct_name})")
+        for year in tqdm(years, desc=f"    years", leave=False):
+            row = {"ticker": ticker, "company": ct_name, "year": year}
+            for phase_code, col_name in phases.items():
+                count = _fetch_trial_count(ct_name, phase_code, year)
+                row[col_name] = count
+                time.sleep(delay)
+            row["total_active_trials"] = sum(
+                row[c] for c in phases.values() if isinstance(row[c], int)
+            )
+            rows.append(row)
+
+    df = pd.DataFrame(rows)
+    df = df.sort_values(["ticker", "year"]).reset_index(drop=True)
+    out = os.path.join(RAW_DIR, "pipeline_size.csv")
+    df.to_csv(out, index=False)
+    print(f"\n[Pipeline] ✓ {len(df):,} rows → {out}")
+    return df
+
+
+# ══════════════════════════════════════════════════════════════
+# DATASET 4 — COMPANY SIZE (SEC EDGAR — revenue)
+#
+# Market cap is NOT in EDGAR (it's a stock market figure, not a
+# filing figure). We pull revenue instead, which is reported in
+# every 10-K and is the cleanest measure of company size over time.
+#
+# Revenue tags tried in order (companies use slightly different tags):
+#   1. Revenues
+#   2. RevenueFromContractWithCustomerExcludingAssessedTax
+#   3. SalesRevenueNet
+# We try each until one returns data.
+# ══════════════════════════════════════════════════════════════
+
+REVENUE_TAGS = [
+    "Revenues",
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "SalesRevenueNet",
+]
+
+def fetch_company_size(delay=0.5):
+    """
+    Pull annual revenue for all 15 companies from SEC EDGAR.
+    Saves to company_size_all.csv with columns:
+        ticker, company, year, revenue_usd_m
+    """
+    print(f"\n── DATASET 4: Company Size / Revenue (SEC EDGAR) ──")
+    all_dfs = []
+
+    for ticker, (slug, _ct_name) in COMPANIES.items():
+        cik = COMPANY_CIKS.get(ticker)
+        print(f"  {ticker:<6}", end=" ", flush=True)
+
+        # Try revenue tags in order until one works
+        rev_df = pd.DataFrame()
+        used_tag = ""
+        for tag in REVENUE_TAGS:
+            rev_df, status = _fetch_edgar_fact(cik, tag)
+            if not rev_df.empty:
+                used_tag = tag
+                break
+            time.sleep(delay)
+
+        if rev_df.empty:
+            print(f"→ no revenue data (tried all tags)")
+            continue
+
+        rev_df = rev_df.rename(columns={"value_usd_m": "revenue_usd_m"})
+        rev_df["ticker"]  = ticker
+        rev_df["company"] = slug.replace("-", " ").title()
+
+        latest_rev = rev_df["revenue_usd_m"].iloc[-1]
+        print(f"→ {len(rev_df)} years  (latest: ${latest_rev:,.0f}M)  [{used_tag}]")
+        all_dfs.append(rev_df)
+        time.sleep(delay)
+
+    if not all_dfs:
+        print("[Company Size] No data collected.")
+        return pd.DataFrame()
+
+    combined = pd.concat(all_dfs, ignore_index=True)
+    cols = ["ticker", "company", "year", "revenue_usd_m"]
+    combined = combined[cols].sort_values(["ticker", "year"]).reset_index(drop=True)
+
+    out = os.path.join(RAW_DIR, "company_size_all.csv")
+    combined.to_csv(out, index=False)
+    print(f"[Company Size] ✓ {len(combined):,} rows → {out}")
+    return combined
+
+
+# ══════════════════════════════════════════════════════════════
+# SUMMARY PREVIEW — runs after all four datasets are pulled
+# ══════════════════════════════════════════════════════════════
+
+def preview_all(fda_df, rd_df, pipeline_df, size_df):
+    print("\n" + "="*55)
+    print("ALL DATASETS — EXTRACTION SUMMARY")
+    print("="*55)
+
+    datasets = [
+        ("FDA Approvals",    fda_df,      ["sponsor_name","brand_name","approval_year","app_type"]),
+        ("R&D Spend",        rd_df,        ["ticker","company","year","rd_spend_usd_m"]),
+        ("Pipeline Size",    pipeline_df,  ["ticker","company","year","phase1_trials","phase2_trials","phase3_trials"]),
+        ("Company Size",     size_df,      ["ticker","company","year","revenue_usd_m","market_cap_usd_m"]),
+    ]
+
+    for name, df, cols in datasets:
+        if df is None or df.empty:
+            print(f"\n  {name}: no data")
+            continue
+        print(f"\n  {name}  ({len(df):,} rows × {len(df.columns)} cols)")
+        show_cols = [c for c in cols if c in df.columns]
+        print(df[show_cols].head(4).to_string(index=False))
+
+    print(f"\n  Files in ./data/raw/:")
+    for f in sorted(os.listdir(RAW_DIR)):
+        path = os.path.join(RAW_DIR, f)
+        size_kb = os.path.getsize(path) / 1024
+        print(f"    {f:<40} {size_kb:>6.1f} KB")
+
+    print("\n✓ Done. Load these CSVs in your Jupyter notebook with pd.read_csv()")
+
+
+# ══════════════════════════════════════════════════════════════
+# MAIN — comment out any section you've already run
+# ══════════════════════════════════════════════════════════════
+
+if __name__ == "__main__":
+
+    # Dataset 1 — FDA approvals (~3 min, ~150 MB download)
+    fda_df = fetch_fda_approvals(start_year=2000, end_year=2024)
+
+    # Dataset 2 — R&D spend (~2 min, 15 companies × 2.5s delay)
+    rd_df = fetch_all_rd_spend(delay=2.5)
+
+    # Dataset 3 — Clinical pipeline (~20 min, 1,125 API calls)
+    # This is the slowest one — run it last or separately.
+    pipeline_df = fetch_pipeline_size(start_year=2000, end_year=2024, delay=1.0)
+
+    # Dataset 4 — Company size (~3 min, 15 companies × 2 metrics × 2.5s delay)
+    size_df = fetch_company_size(delay=2.5)
+
+    # Preview all four
+    preview_all(fda_df, rd_df, pipeline_df, size_df)

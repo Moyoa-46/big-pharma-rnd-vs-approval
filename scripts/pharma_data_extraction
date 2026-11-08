@@ -1,0 +1,276 @@
+"""
+Pharma Portfolio Project — Data Extraction (v3, fixed)
+=======================================================
+FIX: The date field is 'submission_status_date', not 'action_date'.
+     Filtering now also requires submission_status == 'AP' (Approved only).
+
+Sources:
+  1. FDA Drugs@FDA  → bulk download (zip), no API needed
+  2. Macrotrends    → R&D spend per company (web scrape)
+
+Output files saved to ./data/raw/
+  - fda_approvals_raw.csv
+  - rd_spend_all.csv
+
+Requirements:
+  pip install requests pandas beautifulsoup4 lxml tqdm
+"""
+
+import io, os, json, time, zipfile, requests
+import pandas as pd
+from bs4 import BeautifulSoup
+from tqdm import tqdm
+
+RAW_DIR = os.path.join("data", "raw")
+os.makedirs(RAW_DIR, exist_ok=True)
+
+
+# ══════════════════════════════════════════════════════════════
+# PART 1 — FDA BULK DOWNLOAD
+# ══════════════════════════════════════════════════════════════
+# What we learned from the diagnostic:
+#   - Date field is 'submission_status_date' (e.g. "20021216")
+#   - We want submission_type == "ORIG"  (original approvals only)
+#   - We also want submission_status == "AP"  (approved, not withdrawn)
+# ══════════════════════════════════════════════════════════════
+
+FDA_BULK_URL = (
+    "https://download.open.fda.gov/drug/drugsfda/"
+    "drug-drugsfda-0001-of-0001.json.zip"
+)
+
+def fetch_fda_approvals(start_year=2000, end_year=2024):
+
+    print("\n── FDA Bulk Download ──")
+
+    # Step 1: download the zip file
+    resp = requests.get(FDA_BULK_URL, stream=True, timeout=120)
+    resp.raise_for_status()
+
+    total_bytes = int(resp.headers.get("content-length", 0))
+    buffer = io.BytesIO()
+    with tqdm(total=total_bytes, unit="B", unit_scale=True, desc="  Downloading") as pbar:
+        for chunk in resp.iter_content(chunk_size=256 * 1024):
+            buffer.write(chunk)
+            pbar.update(len(chunk))
+
+    # Step 2: unzip in memory and parse JSON
+    buffer.seek(0)
+    print("  Unzipping...")
+    with zipfile.ZipFile(buffer) as zf:
+        with zf.open(zf.namelist()[0]) as f:
+            records = json.load(f)["results"]
+
+    print(f"  {len(records):,} total records loaded")
+
+    # Step 3: flatten and filter
+    rows = []
+    for rec in tqdm(records, desc="  Processing", unit="rec"):
+
+        app_number  = rec.get("application_number", "")
+        sponsor     = rec.get("sponsor_name", "")
+        products    = rec.get("products", [])
+        brand_name  = products[0].get("brand_name",  "") if products else ""
+        dosage_form = products[0].get("dosage_form", "") if products else ""
+        route       = products[0].get("route",       "") if products else ""
+        mkt_status  = products[0].get("marketing_status", "") if products else ""
+
+        # Get active ingredient names (there can be more than one)
+        active_ingredients = ""
+        if products:
+            ingredients = products[0].get("active_ingredients", [])
+            active_ingredients = "; ".join(i.get("name", "") for i in ingredients)
+
+        for sub in rec.get("submissions", []):
+
+            # FILTER 1: original submissions only (not label updates)
+            if sub.get("submission_type") != "ORIG":
+                continue
+
+            # FILTER 2: approved only (not withdrawn or tentative)
+            if sub.get("submission_status") != "AP":
+                continue
+
+            # The date field is submission_status_date, format YYYYMMDD
+            date_str = sub.get("submission_status_date", "")
+            try:
+                year = int(date_str[:4])
+            except (ValueError, TypeError):
+                continue
+
+            # FILTER 3: our date range
+            if not (start_year <= year <= end_year):
+                continue
+
+            rows.append({
+                "application_number"  : app_number,
+                "app_type"            : app_number[:3] if len(app_number) >= 3 else "",
+                "sponsor_name"        : sponsor,
+                "brand_name"          : brand_name,
+                "active_ingredients"  : active_ingredients,
+                "dosage_form"         : dosage_form,
+                "route"               : route,
+                "marketing_status"    : mkt_status,
+                "approval_date"       : date_str,        # raw: "20021216"
+                "approval_year"       : year,
+                "review_priority"     : sub.get("review_priority", ""),
+                "submission_class"    : sub.get("submission_class_code", ""),
+            })
+
+    df = pd.DataFrame(rows)
+
+    # Convert approval_date to proper datetime
+    df["approval_date"] = pd.to_datetime(df["approval_date"], format="%Y%m%d", errors="coerce")
+    df = df.sort_values("approval_date").reset_index(drop=True)
+
+    out_path = os.path.join(RAW_DIR, "fda_approvals_raw.csv")
+    df.to_csv(out_path, index=False)
+    print(f"\n[FDA] ✓ {len(df):,} approved original applications saved → {out_path}")
+    return df
+
+
+# ══════════════════════════════════════════════════════════════
+# PART 2 — MACROTRENDS R&D SPEND SCRAPER
+# ══════════════════════════════════════════════════════════════
+
+PHARMA_COMPANIES = {
+    "JNJ"  : "johnson-johnson",
+    "PFE"  : "pfizer",
+    "MRK"  : "merck",
+    "ABBV" : "abbvie",
+    "LLY"  : "eli-lilly",
+    "BMY"  : "bristol-myers-squibb",
+    "AMGN" : "amgen",
+    "GILD" : "gilead-sciences",
+    "BIIB" : "biogen",
+    "REGN" : "regeneron-pharmaceuticals",
+    "AZN"  : "astrazeneca",
+    "NVS"  : "novartis",
+    "RHHBY": "roche",
+    "SNY"  : "sanofi",
+    "GSK"  : "glaxosmithkline",
+}
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.macrotrends.net/",
+}
+
+def scrape_rd_spend(ticker, slug):
+    url = (f"https://www.macrotrends.net/stocks/charts"
+           f"/{ticker}/{slug}/research-development-expenses")
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"  [{ticker}] failed: {e}")
+        return pd.DataFrame()
+
+    soup  = BeautifulSoup(resp.text, "lxml")
+    table = soup.find("table", {"class": "historical_data_table"})
+    if not table:
+        tables = soup.find_all("table")
+        table  = tables[0] if tables else None
+    if not table:
+        print(f"  [{ticker}] table not found")
+        return pd.DataFrame()
+
+    rows = []
+    for tr in table.find_all("tr")[1:]:
+        cols = tr.find_all("td")
+        if len(cols) < 2:
+            continue
+        year_text = cols[0].get_text(strip=True)
+        val_text  = cols[1].get_text(strip=True)
+        val_clean = val_text.replace("$", "").replace(",", "").strip()
+        multiplier = 1.0
+        if val_clean.endswith("B"):
+            multiplier = 1000.0
+            val_clean  = val_clean[:-1]
+        elif val_clean.endswith("M"):
+            val_clean  = val_clean[:-1]
+        try:
+            year    = int(year_text[:4])
+            value_m = float(val_clean) * multiplier
+        except ValueError:
+            continue
+        rows.append({
+            "year"           : year,
+            "rd_spend_usd_m" : round(value_m, 2),
+            "ticker"         : ticker,
+            "company"        : slug.replace("-", " ").title(),
+        })
+
+    df = pd.DataFrame(rows)
+    if not df.empty:
+        df = df.sort_values("year").reset_index(drop=True)
+    return df
+
+
+def fetch_all_rd_spend(companies=PHARMA_COMPANIES, delay=2.5):
+    print(f"\n── Macrotrends: R&D spend for {len(companies)} companies ──")
+    all_dfs = []
+    for ticker, slug in companies.items():
+        print(f"  {ticker:<6}", end=" ", flush=True)
+        df = scrape_rd_spend(ticker, slug)
+        if df.empty:
+            print("→ no data")
+            continue
+        print(f"→ {len(df)} years  (latest: ${df['rd_spend_usd_m'].iloc[-1]:,.0f}M)")
+        out = os.path.join(RAW_DIR, f"rd_spend_{ticker}.csv")
+        df.to_csv(out, index=False)
+        all_dfs.append(df)
+        time.sleep(delay)
+
+    if not all_dfs:
+        return pd.DataFrame()
+
+    combined = pd.concat(all_dfs, ignore_index=True)
+    path = os.path.join(RAW_DIR, "rd_spend_all.csv")
+    combined.to_csv(path, index=False)
+    print(f"\n[Macrotrends] ✓ {len(combined):,} rows saved → {path}")
+    return combined
+
+
+# ══════════════════════════════════════════════════════════════
+# SUMMARY PREVIEW
+# ══════════════════════════════════════════════════════════════
+
+def preview(fda_df, rd_df):
+    print("\n" + "="*55)
+    print("EXTRACTION COMPLETE")
+    print("="*55)
+
+    if not fda_df.empty:
+        print(f"\n FDA Approvals  ({len(fda_df):,} rows)")
+        print(f"  Years covered : {fda_df['approval_year'].min()} – {fda_df['approval_year'].max()}")
+        print(f"  App types     : {fda_df['app_type'].value_counts().to_dict()}")
+        print(f"  Unique companies : {fda_df['sponsor_name'].nunique()}")
+        print(f"  Priority reviews : {(fda_df['review_priority']=='PRIORITY').sum()}")
+        print(f"\n  First 5 rows:")
+        cols = ["sponsor_name","brand_name","approval_year","app_type","review_priority"]
+        print(fda_df[cols].head().to_string(index=False))
+
+    if not rd_df.empty:
+        print(f"\n R&D Spend  ({len(rd_df):,} rows, {rd_df['ticker'].nunique()} companies)")
+        print(f"  Years covered : {rd_df['year'].min()} – {rd_df['year'].max()}")
+        print(f"\n  First 8 rows:")
+        print(rd_df.head(8).to_string(index=False))
+
+    print(f"\n Files saved to: ./data/raw/")
+    print("  Next step: open your Jupyter notebook and load these CSVs with pd.read_csv()")
+
+
+# ══════════════════════════════════════════════════════════════
+# RUN
+# ══════════════════════════════════════════════════════════════
+
+if __name__ == "__main__":
+    fda_df = fetch_fda_approvals(start_year=2000, end_year=2024)
+    rd_df  = fetch_all_rd_spend()
+    preview(fda_df, rd_df)
